@@ -1,3 +1,5 @@
+import Footer from '@/component/bar/Footer'
+import Navbar from '@/component/bar/Navbar'
 import React from 'react'
 
 export const metadata={
@@ -7,8 +9,10 @@ export const metadata={
 
 const HomeLayout = ({children}) => {
   return (
-    <div>
+    <div className='w-full  pt-16 flex flex-col min-h-screen items-center justify-between'>
+      <Navbar/>
       {children}
+      <Footer/>
     </div>
   )
 }

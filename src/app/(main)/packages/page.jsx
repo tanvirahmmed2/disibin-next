@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Service = () => {
+const PackagesPage = () => {
   return (
     <div>
-      fgfgfhgc
+      
     </div>
   )
 }
 
-export default Service
+export default PackagesPage

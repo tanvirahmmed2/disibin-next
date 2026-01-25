@@ -5,10 +5,10 @@ export const metadata={
     description:'Admin page'
 }
 
-const AdminLayout = () => {
+const AdminLayout = ({children}) => {
   return (
     <div>
-      
+      {children}
     </div>
   )
 }

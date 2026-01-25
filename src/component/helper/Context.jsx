@@ -1,10 +1,20 @@
 'use client'
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
-export const Context= createContext()
+export const Context = createContext()
 
 
-const ContextProvider=()=>{
+const ContextProvider = ({ children }) => {
+    const [sidebar, setSidebar] = useState(false)
+
+
+    const contextValues = {
+        sidebar, setSidebar
+    }
+
+    return <Context.Provider value={contextValues}>
+        {children}
+    </Context.Provider>
 
 }
 

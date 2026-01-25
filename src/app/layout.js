@@ -14,9 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={` antialiased bg-white text-black`}
-      >
+      <body className="w-full overflow-x-hidden relative bg-white">
         <ContextProvider>
           <main>{children}</main>
         </ContextProvider>

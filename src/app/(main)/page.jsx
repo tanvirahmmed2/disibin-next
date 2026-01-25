@@ -12,6 +12,7 @@ const MainPage = () => {
       <Service/>
       <HappyCustomers/>
       <Team/>
+      fefe
       <Support/>
       
     </div>

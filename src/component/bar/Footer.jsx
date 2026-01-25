@@ -38,16 +38,27 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className='w-full flex items-center justify-center flex-row gap-4'>
-        <Link className='text-2xl' href="https://www.facebook.com/disibin"><FaFacebook /></Link>
-        <Link className='text-2xl' href="https://www.instagram.com/user.disibin/"><FaInstagram /></Link>
-        <Link className='text-2xl' href="https://www.youtube.com/@Disibin"><FaYoutube /></Link>
-        <Link className='text-2xl' href="mailto:disibin@gmail.com"><CiMail /></Link>
-        <Link className='text-2xl' href="tel:+8801987131369"><FaPhone /></Link>
-        <Link className='text-2xl' href="https://t.me/disibin"><FaTelegram /></Link>
+      <div className='w-full grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 border-t pt-4'>
+        <div className='w-auto min-w-50 flex flex-col gap-1 justify-center'>
+          <Link href="/" className='text-2xl font-bold'>Disibin</Link>
+          <p>Web & Graphics Development Studio</p>
+        </div>
+        <div className='w-auto min-w-50 flex flex-col gap-1 justify-center'>
+
+          <div className='w-full flex flex-row items-center justify-center gap-4'>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://www.facebook.com/disibin"><FaFacebook /></Link>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://www.instagram.com/user.disibin/"><FaInstagram /></Link>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://www.youtube.com/@Disibin"><FaYoutube /></Link>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="mailto:disibin@gmail.com"><CiMail /></Link>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="tel:+8801987131369"><FaPhone /></Link>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://t.me/disibin"><FaTelegram /></Link>
+          </div>
+          <p className='text-center w-auto min-w-50'>2023 Disibin. All rights are reserved</p>
+        </div>
+
+
 
       </div>
-      <p className='w-full text-center italic border-t pt-4'>Copyright reserved by <Link className='font-semibold not-italic ' href={'https://disibin.com'}>Disibin | 2023</Link></p>
     </footer>
   )
 }

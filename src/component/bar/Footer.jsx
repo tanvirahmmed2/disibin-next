@@ -41,7 +41,7 @@ const Footer = () => {
       <div className='w-full grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 border-t pt-4'>
         <div className='w-auto min-w-50 flex flex-col gap-1 justify-center'>
           <Link href="/" className='text-2xl font-bold'>Disibin</Link>
-          <p>Web & Graphics Development Studio</p>
+          <p>Technology Development Studio</p>
         </div>
         <div className='w-auto min-w-50 flex flex-col gap-1 justify-center'>
 

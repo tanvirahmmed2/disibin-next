@@ -1,14 +1,14 @@
 'use client'
 import React, { useState } from 'react'
 
-const ProjectsPage = () => {
-  const [projects, setProjects]= useState([])
+const PricingPage = () => {
+  const [packages, setPakages]= useState([])
   
     return (
       <div className='w-full flex flex-col items-center gap-4 p-4'>
         {
-          projects.length===0? <div>
-            <p>Project data not found</p>
+          packages.length===0? <div>
+            <p>Package data not found</p>
           </div>:<div>
   
             <h1></h1>
@@ -18,4 +18,4 @@ const ProjectsPage = () => {
     )
 }
 
-export default ProjectsPage
+export default PricingPage

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PackagesPage = () => {
+const AddNewBlogForm = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const PackagesPage = () => {
   )
 }
 
-export default PackagesPage
+export default AddNewBlogForm

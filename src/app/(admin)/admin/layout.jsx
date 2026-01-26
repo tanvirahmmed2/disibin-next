@@ -1,3 +1,4 @@
+import AdminSideBar from '@/component/bar/AdminSideBar'
 import React from 'react'
 
 export const metadata={
@@ -7,7 +8,8 @@ export const metadata={
 
 const AdminLayout = ({children}) => {
   return (
-    <div>
+    <div className='w-full pl-16 relative'>
+      <AdminSideBar/>
       {children}
     </div>
   )

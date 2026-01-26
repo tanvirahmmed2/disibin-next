@@ -44,7 +44,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      <div className='w-full p-4 bg-sky-900 text-center text-white py-5 flex flex-col gap-4'>
+      <div className='w-full p-4 bg-sky-50 text-center py-5 flex flex-col gap-4'>
         <p className='text-center w-full font-semibold'>DisiBin, is a dynamic and forward-thinking digital agency committed to transforming ideas into impactful digital experiences. We provide end-to-end services that blend strategy, creativity, and technology to help businesses thrive in the modern digital landscape.</p>
         <p className='text-center w-full font-semibold'>Our mission is to empower businesses—big or small—to succeed onne. We believe in honest communication, long-term partnerships, and devering measurable results. Whether you’re launching a new product, redesigning your website, or building a brand from scratch, our team is here to make it happen.</p>
 

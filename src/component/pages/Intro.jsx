@@ -5,17 +5,18 @@ import { Typewriter } from 'react-simple-typewriter'
 
 const Intro = () => {
   return (
-    <div  className='w-full h-150 flex flex-col items-center justify-center gap-4 p-4 relative text-white'>
-      <Image src={'/bg.jpeg'} alt='bg' width={1000} height={1000} className='w-full h-150 absolute -z-10 opacity-65'/>
+    <div  className='w-full h-180 flex flex-col items-center justify-center gap-4 p-4 relative text-white text-center font-mono'>
+      <Image src={'/bg.jpeg'} alt='bg' width={1000} height={1000} className='w-full h-180 absolute -z-10 opacity-65 object-cover blur-[4px]'/>
 
 
       <p className='text-2xl font-semibold'>A Leading Software Development Company Worldwide</p>
-      <p className='text-8xl font-semibold text-sky-600'>
+      <p className='text-5xl sm:text-7xl md:text-9xl font-bold text-orange-300 font-sans'>
         <Typewriter
           words={[
             "Disibin",
-            'Ultimate Solution',
-            "100X Business Growth"
+            'Design . Build . Inspire',
+            'Creative . Responsive . Powerful',
+            "Ideas . Code . Impact"
           ]}
           loop={0}
           cursor

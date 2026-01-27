@@ -10,7 +10,7 @@ const Intro = () => {
 
 
       <p className='text-2xl font-semibold'>A Leading Software Development Company Worldwide</p>
-      <p className='text-5xl sm:text-7xl md:text-9xl font-bold text-sky-300 font-sans'>
+      <p className='text-5xl sm:text-7xl md:text-9xl font-bold text-teal-300 font-sans'>
         <Typewriter
           words={[
             "Disibin",

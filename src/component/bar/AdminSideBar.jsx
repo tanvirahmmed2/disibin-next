@@ -13,7 +13,7 @@ const MenuItem = ({ href, icon: Icon, label }) => {
   const pathname = usePathname()
   const isActive = pathname === href
   return (
-    <Link href={href} className={`group font-serif flex opacity-80 flex-row gap-4 items-center px-2 py-1 transition-all ${isActive ? 'bg-sky-500 text-white' : 'hover:bg-sky-600 hover:text-white'}`}>
+    <Link href={href} className={`group font-serif flex opacity-80 flex-row gap-4 items-center px-2 py-1 transition-all ${isActive ? 'bg-teal-500 text-white' : 'hover:bg-teal-600 hover:text-white'}`}>
       <Icon size={14} />
       <span className="hidden group-hover:inline whitespace-nowrap">{label}</span>
     </Link>

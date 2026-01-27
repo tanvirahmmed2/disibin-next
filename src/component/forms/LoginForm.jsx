@@ -23,7 +23,7 @@ const LoginForm = () => {
             <input type="password" name='password' id='password' required onChange={handleChange} value={formData.password} className='w-full px-3 p-1 border rounded-sm outline-none'/>
         </div>
         <Link className='text-right' href={'/register'}>new user?</Link>
-        <button type='submit' className='px-4 bg-sky-900 text-white p-1 cursor-pointer hover:bg-sky-700'>Login</button>
+        <button type='submit' className='px-4 bg-teal-900 text-white p-1 cursor-pointer hover:bg-teal-700'>Login</button>
     </motion.form>
   )
 }

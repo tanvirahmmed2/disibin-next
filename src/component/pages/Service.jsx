@@ -57,7 +57,7 @@ const Service = () => {
      <div className='w-full  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center gap-8'>
       {
         servicesData && servicesData.map((service)=>(
-          <motion.div initial={{opacity:0, y:0}} whileInView={{opacity:1}}  transition={{duration:1}} key={service.id} className='w-full h-60 even:hover:-rotate-2 hover:rotate-2   flex flex-col items-center justify-center shadow-teal-200 shadow-sm hover:shadow-xl cursor-pointer transition ease-in-out duration-500 text-center rounded-lg p-5 gap-3'>
+          <motion.div initial={{opacity:0, y:0}} whileInView={{opacity:1}}  transition={{duration:1}} key={service.id} className='w-full h-60 even:hover:-rotate-2 hover:rotate-2   flex flex-col items-center justify-center shadow-teal-700 shadow-sm hover:shadow-xl cursor-pointer transition ease-in-out duration-500 text-center rounded-lg p-5 gap-3'>
             <p className='text-3xl'>{service.icon}</p>
             <h1 className='font-semibold'>{service.title}</h1>
             <p className='opacity-70'>{service.description}</p>

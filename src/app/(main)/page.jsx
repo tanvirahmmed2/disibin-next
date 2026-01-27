@@ -1,3 +1,4 @@
+import Bio from '@/component/pages/Bio'
 import HappyCustomers from '@/component/pages/HappyCustomers'
 import Intro from '@/component/pages/Intro'
 import Service from '@/component/pages/Service'
@@ -11,6 +12,7 @@ const MainPage = () => {
     <div className='w-full'>
       <Intro/>
       <Service/>
+      <Bio/>
       <WhyUs/>
       <HappyCustomers/>
       <Team/>

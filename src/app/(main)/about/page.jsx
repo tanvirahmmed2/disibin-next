@@ -19,32 +19,9 @@ const AboutPage = () => {
   return (
     <div className='w-full min-h-screen  py-8 flex flex-col gap-6 items-center justify-center'>
       <h1 className='text-2xl font-semibold text-center'>About us</h1>
-      <div className='w-full p-4 flex flex-col lg:flex-row items-center justify-center gap-8 '>
+     
 
-        <div className='w-full flex flex-col gap-2 items-start justify-center'>
-          <h1 className='font-semibold text-3xl'>A small studio with big care</h1>
-          <p>We’re a tight-knit team focused on clarity, speed, and friendly collaboration. No fluff—just websites that work hard for your business.</p>
-
-        </div>
-
-        <div className='w-full text-center p-2 shadow  flex flex-row items-center justify-center gap-2 border border-teal-500 rounded-xl border-opacity-20'>
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center h-37.5 bg-white/5 rounded-lg text-xl font-semibold'>
-            <p>20+</p>
-            <p>Projects shipped</p>
-          </motion.div>
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center h-37.5 bg-white/5 rounded-lg text-xl font-semibold'>
-            <p className='flex items-center gap-1 text-teal-500'>5 <FaRegStar /></p>
-            <p>Customers rated</p>
-          </motion.div>
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center h-37.5 bg-white/5 rounded-lg text-xl font-semibold'>
-            <p>100%</p>
-            <p>Remote friendly</p>
-          </motion.div>
-
-        </div>
-      </div>
-
-      <div className='w-full p-4 bg-teal-50 text-center py-5 flex flex-col gap-4'>
+      <div className='w-full p-4 bg-linear-to-br from-teal-900 to-teal-700 text-white text-center py-5 flex flex-col gap-4'>
         <p className='text-center w-full font-semibold'>DisiBin, is a dynamic and forward-thinking digital agency committed to transforming ideas into impactful digital experiences. We provide end-to-end services that blend strategy, creativity, and technology to help businesses thrive in the modern digital landscape.</p>
         <p className='text-center w-full font-semibold'>Our mission is to empower businesses—big or small—to succeed onne. We believe in honest communication, long-term partnerships, and devering measurable results. Whether you’re launching a new product, redesigning your website, or building a brand from scratch, our team is here to make it happen.</p>
 

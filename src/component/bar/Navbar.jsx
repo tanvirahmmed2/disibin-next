@@ -9,7 +9,7 @@ import { CiMenuFries } from "react-icons/ci";
 const Navbar = () => {
   const {sidebar, setSidebar}= useContext(Context)
   return (
-    <nav className='w-full fixed top-0 right-0 h-16 bg-white shadow z-50 flex flex-row items-center justify-around'>
+    <nav className='w-full fixed top-0 right-0 h-16 bg-white shadow z-50 flex flex-row items-center justify-around text-teal-800'>
       <button onClick={()=>setSidebar(!sidebar)} className='flex sm:hidden text-2xl cursor-pointer'>
         {
           sidebar? <CiMenuFries/>:<MdOutlineMenu/>

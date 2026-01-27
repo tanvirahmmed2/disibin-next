@@ -39,12 +39,12 @@ const datas = [
 
 const WhyUs = () => {
   return (
-  <div className='w-full p-4 flex flex-col items-center justify-center bg-teal-800 text-white gap-6 py-8'>
+  <div className='w-full p-4 flex flex-col items-center justify-center bg-linear-to-b  gap-6 py-8'>
       <h1 className='text-2xl font-semibold'>Why us!</h1>
       <div className='w-full  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center gap-8'>
       {
         datas && datas.map((data)=>(
-          <motion.div initial={{opacity:0, y:0}} whileInView={{opacity:1}}  transition={{duration:1}} key={data.id} className='w-full h-60 not-even:hover:-rotate-2 hover:rotate-2   flex flex-col items-center justify-center shadow-teal-200 shadow-sm hover:shadow-xl cursor-pointer transition ease-in-out duration-500 text-center rounded-full p-5 gap-3'>
+          <motion.div initial={{opacity:0, y:0}} whileInView={{opacity:1}}  transition={{duration:1}} key={data.id} className='w-full h-60 not-even:hover:-rotate-2 hover:rotate-2   flex flex-col items-center justify-center shadow-teal-700 shadow-sm hover:shadow-xl cursor-pointer transition ease-in-out duration-500 text-center rounded-full p-5 gap-3'>
             <p className='text-3xl'>{data.icon}</p>
             <h1 className='font-semibold'>{data.title}</h1>
             <p className='opacity-70'>{data.description}</p>

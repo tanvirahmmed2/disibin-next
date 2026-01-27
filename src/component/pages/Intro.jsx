@@ -5,8 +5,8 @@ import { Typewriter } from 'react-simple-typewriter'
 
 const Intro = () => {
   return (
-    <div  className='w-full h-180 flex flex-col items-center justify-center gap-4 p-4 relative text-white text-center font-mono'>
-      <Image src={'/bg.jpeg'} alt='bg' width={1000} height={1000} className='w-full h-180 absolute -z-10 opacity-65 object-cover blur-[4px]'/>
+    <div  className='w-full h-180 flex flex-col items-center justify-center gap-4 p-4 relative text-white text-center font-mono overflow-hidden'>
+      <Image src={'/bg.jpeg'} alt='bg' width={1000} height={1000} className='w-full h-180 absolute -z-10 opacity-65 object-cover blur-[4px] scale-110'/>
 
 
       <p className='text-2xl font-semibold'>A Leading Software Development Company Worldwide</p>

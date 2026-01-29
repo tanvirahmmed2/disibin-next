@@ -53,7 +53,7 @@ const Footer = () => {
             <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="tel:+8801987131369"><FaPhone /></Link>
             <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://t.me/disibin"><FaTelegram /></Link>
           </div>
-          <p className='text-center w-auto min-w-50'>2023 Disibin. All rights are reserved</p>
+          <p className='text-center w-auto min-w-50'>2023 Disibin | All rights are reserved</p>
         </div>
 
 

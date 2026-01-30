@@ -77,7 +77,7 @@ export async function DELETE(req) {
             },{status:400})
         }
          return NextResponse.json({
-            success:true, message:'Successfully registered'
+            success:true, message:'Successfully deleted user'
          },{status:200})
     } catch (error) {
         return NextResponse.json({

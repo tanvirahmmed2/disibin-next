@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 
 export const pool= new Pool({
-  user:'postgres.zinxiylluugznsqzdjgk',
-  password:'tanvir483469$$',
-  host:'aws-1-ap-southeast-1.pooler.supabase.com',
-  port:'6543',
-  database:'postgres',
+  user:process.env.PG_USER,
+  password:process.env.PG_PASSWORD,
+  host:process.env.PG_HOST,
+  port:process.env.PG_PORT,
+  database:process.env.PG_DATABASE,
   ssl: {
     rejectUnauthorized: false, 
   },

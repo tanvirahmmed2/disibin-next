@@ -20,9 +20,9 @@ const Support = () => {
     e.preventDefault()
     try {
       const response=await axios.post('/api/support', formData, {withCredentials:true})
-     console.log(response.data.message)
+    alert(response.data.message)
     } catch (error) {
-      console.log(error)
+      alert(error?.response?.data?.message || "Failed to send messsage")
       
     }
   }

@@ -1,18 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactCompiler: true,
-
+  allowedDevOrigins: ['192.168.1.100'],
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'randomuser.me',
-        pathname: '/**',
+        hostname: 'res.cloudinary.com',
       },
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        pathname: '/**',
+        hostname: 'images.unsplash.com',
       },
     ],
   },

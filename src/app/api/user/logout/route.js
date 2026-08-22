@@ -1,23 +1,16 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { cookies } from 'next/headers';
 
 export async function POST() {
-    try {
-        const response = NextResponse.json({
-            success: true,
-            message: "Logged out successfully"
-        });
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete('ecom_token');
 
-        response.cookies.set("disibin-user", "", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 0,
-            path: "/",
-        });
-
-        return response;
-    } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-    }
+    return Response.json(
+      { message: 'Logged out successfully' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Logout error:', error);
+    return Response.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }

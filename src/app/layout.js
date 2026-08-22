@@ -1,61 +1,29 @@
-import { Lora, Jersey_10, Silkscreen, Poppins } from 'next/font/google';
+
 import ContextProvider from "@/component/helper/Context";
-import { Toaster } from "react-hot-toast";
+import HotToast from "@/component/helper/HotToast";
+import { STORE_NAME, STORE_TAGLINE } from "@/lib/secret";
 import "./globals.css";
-
-const lora = Lora({
-  subsets: ['latin'],
-  variable: '--font-lora',
-});
-
-const jersey = Jersey_10({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-jersey',
-});
-
-const silkscreen = Silkscreen({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-silkscreen',
-});
-
-const poppins = Poppins({
-  weight: ['100', '400', '700', '900'],
-  subsets: ['latin'],
-  variable: '--font-poppins',
-});
 
 
 export const metadata = {
-  title:'Disibin',
-  description: "Main home page",
+  title: `${STORE_NAME} | ${STORE_TAGLINE}`,
+  description: `${STORE_NAME} | ${STORE_TAGLINE}`,
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${lora.variable}  ${jersey.variable} ${silkscreen.variable} ${poppins.variable} scroll-smooth antialiased bg-gray-100 w-full`}>
+    <html
+      lang="en"
+      className={`overflow-x-hidden h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ContextProvider>
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            gutter={8}
-            containerStyle={{ zIndex: 99999 }}
-            toastOptions={{
-              duration: 4000,
-              style: {
-                borderRadius: '12px',
-                background: '#0f172a',
-                color: '#fff',
-                fontSize: '14px',
-                fontWeight: '500',
-              },
-            }}
-          />
+          <HotToast />
           <main>{children}</main>
         </ContextProvider>
       </body>
     </html>
   );
 }
+

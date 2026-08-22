@@ -1,143 +1,100 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 @theme {
-  /* Fonts */
-  --font-lora: var(--font-lora);
-  --font-jersey: var(--font-jersey);
-  --font-silkscreen: var(--font-silkscreen);
-  --font-poppins: var(--font-poppins);
+  --color-primary: #73976A;       
+  --color-primary-dark: #607E59;  
+  --color-primary-light: #a2ba9c;
 
-  /* Colors (using --color-* for Tailwind v4 utility generation) */
-  --color-primary: #008080;
-  --color-primary-light: #66b2b2;
-  --color-primary-dark: #006666;
+  --color-secondary: #BD4444;  
+  --color-secondary-dark: #842f2f;
+  --color-secondary-light: #d07c7c;
 
-  --color-secondary: #db3600;
-  --color-secondary-light: #e25e32;
-  --color-secondary-dark: #992500;
-
-  --color-tertiary: rgba(255, 255, 255, 0.6);
+  --color-tertiary: #F1F5F9;   
+  --color-tertiary-dark: #000000; 
   --color-tertiary-light: #ffffff;
-  --color-tertiary-dark: #000000;
+
 }
 
-/* ── Keyframe Animations ───────────────────────────── */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
+
+
+@layer utilities{
+    .standard-input{
+        @apply w-full border border-black/70 rounded-md py-1 px-3 outline-none bg-white text-black
+    }
+
+    .primary-button{
+        @apply w-auto px-5 cursor-pointer bg-black text-white rounded-2xl py-1
+    }
+
+    .input-style {
+        width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        background-color: var(--color-tertiary);
+        outline: none;
+        border-radius: 4px;
+        color: var(--color-tertiary-dark);
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        
+    }
+    
+
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(0, 128, 128, 0);
-  }
-  50% {
-    box-shadow: 0 0 32px 4px rgba(0, 128, 128, 0.2);
-  }
-}
-
-@keyframes count-up {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ── Animation Utility Classes ──────────────────────── */
-.animate-fade-up {
-  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.6s ease both;
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-shimmer {
-  animation: shimmer 3s linear infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2.5s ease-in-out infinite;
-}
-
-.animate-count-up {
-  animation: count-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Delays */
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-.delay-600 { animation-delay: 0.6s; }
-.delay-700 { animation-delay: 0.7s; }
-
-/* ── Custom Utilities ───────────────────────────────── */
-.glass {
-  background: var(--color-tertiary);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-}
-
-/* ── Form Controls & Inputs ────────────────────────── */
-.input-style {
-  width: 100%;
-  padding: 0.875rem 1.25rem;
-  border-radius: 1rem;
-  background-color: #f8fafc;
-  color: #0f172a;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  border: 1px solid #e2e8f0;
+.ProseMirror {
   outline: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+}
+.ProseMirror[contenteditable="true"] {
+  min-height: 120px;
+}
+.ProseMirror p {
+  margin-bottom: 0.5rem;
+}
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.ProseMirror blockquote {
+  border-left: 3px solid #cbd5e1;
+  padding-left: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+.ProseMirror code {
+  background-color: #f1f5f9;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+.ProseMirror pre {
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-family: monospace;
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
 }
 
-.input-style::placeholder {
+/* Placeholder styling */
+.ProseMirror p.is-editor-empty:first-child::before,
+.ProseMirror p.is-empty::before {
   color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }

@@ -1,207 +1,249 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import crypto from "crypto";
-import { cookies } from "next/headers";
-import { BASE_URL } from "@/lib/database/secret";
-import { dbQuery } from "@/lib/database/pg";
-import { sendEmail } from "@/lib/database/brevo";
-import { isUserLogin } from "@/lib/auth/user";
+import { cookies } from 'next/headers';
+import { query } from '@/lib/db';
+import { hashPassword, comparePassword, verifyToken, authenticateUser } from '@/lib/auth';
+import { sendEmail } from '@/lib/mailer';
+import { getBaseUrl, STORE_NAME } from '@/lib/secret';
+import crypto from 'crypto';
 
-// GET — Get own profile (authenticated user)
-export async function GET() {
-    try {
-        const auth = await isUserLogin();
-        if (!auth.success) {
-            return NextResponse.json(auth, { status: 401 });
-        }
+export async function GET(req) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('ecom_token')?.value;
 
-        const res = await dbQuery(
-            `SELECT id, name, email, phone, is_active, is_verified, is_2fa_active,
-                    city, country, address_line1, address_line2, state, postal_code, 
-                    pending_email, last_login, created_at, updated_at 
-             FROM users WHERE id = $1`,
-            [auth.data.id]
-        );
-        const user = res.rows[0];
-
-        if (!user) {
-            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
-        }
-
-        return NextResponse.json({
-            success: true,
-            data: { ...user, role: 'user' }
-        });
-
-    } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    if (!token) {
+      return Response.json({ user: null }, { status: 200 });
     }
+
+    const decoded = verifyToken(token);
+    if (!decoded || !decoded.user_id) {
+      return Response.json({ user: null }, { status: 200 });
+    }
+
+    const result = await query(
+      'SELECT user_id, name, email, phone, role, is_active, is_varified, is_banned, created_at, updated_at FROM users WHERE user_id = $1',
+      [decoded.user_id]
+    );
+
+    if (result.rows.length === 0) {
+      return Response.json({ user: null }, { status: 200 });
+    }
+
+    const user = result.rows[0];
+    if (user.is_banned) {
+      return Response.json({ error: 'Account is banned' }, { status: 403 });
+    }
+    if (!user.is_active) {
+      return Response.json({ error: 'Account is deactivated' }, { status: 403 });
+    }
+
+    return Response.json({ user }, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    return Response.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
-// POST — Register a new user
 export async function POST(req) {
-    try {
-        const body = await req.json();
-        const { name, email, phone, password } = body;
+  try {
+    const { name, email, phone, password } = await req.json();
 
-        const cleanName = name ? name.trim() : "";
-        const cleanEmail = email ? email.trim().toLowerCase() : "";
-        const cleanPhone = phone ? phone.trim() : null;
-
-        if (!cleanName || !cleanEmail || !password) {
-            console.warn("POST /api/user 400 Bad Request: Missing required fields", { name: !!cleanName, email: !!cleanEmail, password: !!password });
-            return NextResponse.json(
-                { success: false, message: "Missing required fields (Name, Email, Password)" },
-                { status: 400 }
-            );
-        }
-
-        const emailRes = await dbQuery("SELECT id FROM users WHERE LOWER(email) = $1", [cleanEmail]);
-        if (emailRes.rows.length > 0) {
-            console.warn(`POST /api/user 400 Bad Request: Email '${cleanEmail}' is already registered`);
-            return NextResponse.json({ success: false, message: "Email is already registered" }, { status: 400 });
-        }
-
-        if (cleanPhone) {
-            const phoneRes = await dbQuery("SELECT id FROM users WHERE phone = $1", [cleanPhone]);
-            if (phoneRes.rows.length > 0) {
-                console.warn(`POST /api/user 400 Bad Request: Phone '${cleanPhone}' is already registered`);
-                return NextResponse.json({ success: false, message: "Phone number is already registered" }, { status: 400 });
-            }
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const userRes = await dbQuery(
-            `INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, created_at`,
-            [cleanName, cleanEmail, cleanPhone, hashedPassword]
-        );
-        const user = userRes.rows[0];
-
-        // Generate verification token
-        const verificationToken = crypto.randomBytes(32).toString("hex");
-        const expiresAt = new Date(Date.now() + 24 * 3600000); // 24 hours
-
-        await dbQuery(
-            `UPDATE users SET verification_token = $1, verification_expires_at = $2 WHERE id = $3`,
-            [verificationToken, expiresAt, user.id]
-        );
-
-        // Automatically create a client lead record upon user registration
-        try {
-            await dbQuery(
-                `INSERT INTO client_leads (name, email, phone, note) VALUES ($1, $2, $3, $4)`,
-                [cleanName, cleanEmail, cleanPhone, "Auto-generated from user registration"]
-            );
-        } catch (leadError) {
-            console.error("Auto client_leads insertion failed:", leadError.message);
-        }
-
-        const verifyLink = `${BASE_URL}/auth/verify?token=${verificationToken}`;
-        const htmlContent = `
-            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 10px;">
-                <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Verify Your Email</h1>
-                <p style="color: #64748b; line-height: 1.6; margin-bottom: 24px;">Welcome to Disibin! Please click the button below to verify your email address and activate your account.</p>
-                <a href="${verifyLink}" style="display: inline-block; padding: 16px 32px; background-color: #0ea5e9; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; box-shadow: 0 10px 15px -3px rgba(14,165,233,0.3);">Verify Email Address</a>
-                <p style="color: #94a3b8; font-size: 12px; margin-top: 32px;">This link will expire in 24 hours. If you didn't create an account, you can safely ignore this email.</p>
-            </div>
-        `;
-
-        await sendEmail({ to: cleanEmail, subject: "Verify Your Account - Disibin", htmlContent }).catch((emailErr) => {
-            console.error("Email sending failed during user registration:", emailErr.message);
-        });
-
-        return NextResponse.json(
-            { success: true, message: "User registered successfully. Please check your email to verify your account." },
-            { status: 201 }
-        );
-
-    } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    if (!name || !email || !password) {
+      return Response.json({ error: 'Name, email, and password are required' }, { status: 400 });
     }
+
+    const checkUser = await query('SELECT user_id FROM users WHERE email = $1', [email]);
+    if (checkUser.rows.length > 0) {
+      return Response.json({ error: 'Email is already registered' }, { status: 400 });
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    // Insert user (raw PostgreSQL query)
+    const result = await query(
+      `INSERT INTO users (name, email, phone, password, varification_token)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING user_id, name, email`,
+      [name, email, phone || null, hashedPassword, verificationToken]
+    );
+
+    const newUser = result.rows[0];
+
+    // Create or update customer profile based on phone number
+    if (phone && phone.trim()) {
+      const cleanPhone = phone.trim();
+      const checkCust = await query('SELECT customer_id FROM customers WHERE phone = $1', [cleanPhone]);
+      if (checkCust.rows.length > 0) {
+        await query(
+          `UPDATE customers 
+           SET name = $1, email = $2 
+           WHERE phone = $3`,
+          [name.trim(), email.trim(), cleanPhone]
+        );
+      } else {
+        await query(
+          `INSERT INTO customers (name, email, phone) 
+           VALUES ($1, $2, $3)`,
+          [name.trim(), email.trim(), cleanPhone]
+        );
+      }
+    }
+
+    // Send verification email via Brevo
+    const baseUrl = getBaseUrl(req);
+    const verificationLink = `${baseUrl}/verify-account?token=${verificationToken}`;
+    const mailContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #1e293b; text-align: center;">Welcome to Ecom!</h2>
+        <p>Hi ${name},</p>
+        <p>Thank you for registering. Please verify your email address to activate your account:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationLink}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Verify Account</a>
+        </div>
+        <p>If the button doesn't work, copy and paste this link in your browser:</p>
+        <p style="word-break: break-all; color: #64748b;">${verificationLink}</p>
+        <p style="margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 12px; color: #94a3b8;">
+          This link will expire in 24 hours. If you did not register for an account, please ignore this email.
+        </p>
+      </div>
+    `;
+
+    try {
+      await sendEmail({
+        to: email,
+        subject: `Verify your ${STORE_NAME} Account`,
+        htmlContent: mailContent,
+      });
+    } catch (mailError) {
+      console.error('Failed to send verification email:', mailError);
+      // We still registered the user, but inform them about verification issue or return success
+    }
+
+    return Response.json(
+      { message: 'Registration successful! Please check your email to verify your account.' },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Registration error:', error);
+    return Response.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
-// PATCH — Update profile (authenticated user)
-export async function PATCH(req) {
-    try {
-        const auth = await isUserLogin();
-        if (!auth.success) {
-            return NextResponse.json(auth, { status: 401 });
-        }
-
-        const userId = auth.data.id;
-        const body = await req.json();
-
-        // Strip out protected fields
-        const { password, role, email, id, user_id, is_active, is_verified, pending_email, email_change_code, email_change_expires_at, ...updateData } = body;
-
-        if (Object.keys(updateData).length === 0) {
-            return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
-        }
-
-        const keys = Object.keys(updateData);
-        for (const key of keys) {
-            if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
-                return NextResponse.json({ success: false, message: "Invalid field name" }, { status: 400 });
-            }
-        }
-
-        const values = Object.values(updateData);
-        const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-
-        const res = await dbQuery(
-            `UPDATE users SET ${setClause}, updated_at = now() WHERE id = $${keys.length + 1} RETURNING id, name, email, phone, city, country, address_line1, address_line2, state, postal_code`,
-            [...values, userId]
-        );
-        const updatedUser = res.rows[0];
-
-        return NextResponse.json({
-            success: true,
-            message: "Profile updated successfully",
-            data: { ...updatedUser, role: 'user' }
-        });
-
-    } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+export async function PUT(req) {
+  try {
+    const auth = await authenticateUser();
+    if (!auth.success) {
+      return Response.json({ error: auth.message }, { status: 401 });
     }
+
+    const { name, email, phone, currentPassword, newPassword } = await req.json();
+
+    if (!name || !name.trim()) {
+      return Response.json({ error: 'Name is required' }, { status: 400 });
+    }
+    if (!email || !email.trim()) {
+      return Response.json({ error: 'Email is required' }, { status: 400 });
+    }
+
+    // Check if email is already taken by another user
+    const checkEmail = await query('SELECT user_id FROM users WHERE email = $1 AND user_id != $2', [email.trim(), auth.user.user_id]);
+    if (checkEmail.rows.length > 0) {
+      return Response.json({ error: 'Email address is already in use by another user' }, { status: 400 });
+    }
+
+    const cleanPhone = phone ? phone.trim() : null;
+    let passwordHashToSave = null;
+
+    // Handle password change if requested
+    if (newPassword && newPassword.trim()) {
+      if (!currentPassword) {
+        return Response.json({ error: 'Current password is required to set a new password' }, { status: 400 });
+      }
+
+      // Fetch user's stored password hash
+      const userRes = await query('SELECT password FROM users WHERE user_id = $1', [auth.user.user_id]);
+      if (userRes.rows.length === 0) {
+        return Response.json({ error: 'User record not found' }, { status: 404 });
+      }
+
+      const match = await comparePassword(currentPassword, userRes.rows[0].password);
+      if (!match) {
+        return Response.json({ error: 'Current password is incorrect' }, { status: 400 });
+      }
+
+      passwordHashToSave = await hashPassword(newPassword.trim());
+    }
+
+    // Update user details in database
+    let result;
+    if (passwordHashToSave) {
+      result = await query(
+        `UPDATE users 
+         SET name = $1, email = $2, phone = $3, password = $4, updated_at = NOW() 
+         WHERE user_id = $5 
+         RETURNING user_id, name, email, phone, role, is_active, is_varified, is_banned, created_at, updated_at`,
+        [name.trim(), email.trim(), cleanPhone, passwordHashToSave, auth.user.user_id]
+      );
+    } else {
+      result = await query(
+        `UPDATE users 
+         SET name = $1, email = $2, phone = $3, updated_at = NOW() 
+         WHERE user_id = $4 
+         RETURNING user_id, name, email, phone, role, is_active, is_varified, is_banned, created_at, updated_at`,
+        [name.trim(), email.trim(), cleanPhone, auth.user.user_id]
+      );
+    }
+
+    const updatedUser = result.rows[0];
+
+    // Synchronize customer profile
+    if (cleanPhone) {
+      const checkCust = await query('SELECT customer_id FROM customers WHERE phone = $1', [cleanPhone]);
+      if (checkCust.rows.length > 0) {
+        await query(
+          `UPDATE customers 
+           SET name = $1, email = $2 
+           WHERE phone = $3`,
+          [name.trim(), email.trim(), cleanPhone]
+        );
+      } else {
+        await query(
+          `INSERT INTO customers (name, email, phone) 
+           VALUES ($1, $2, $3)`,
+          [name.trim(), email.trim(), cleanPhone]
+        );
+      }
+    }
+
+    return Response.json({ message: 'Profile settings updated successfully', user: updatedUser }, { status: 200 });
+
+  } catch (error) {
+    console.error('Settings update error:', error);
+    return Response.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
 
-// DELETE — Delete user account (authenticated user, requires password verification)
 export async function DELETE(req) {
-    try {
-        const auth = await isUserLogin();
-        if (!auth.success) {
-            return NextResponse.json(auth, { status: 401 });
-        }
-
-        const userId = auth.data.id;
-        const body = await req.json().catch(() => ({}));
-        const { password } = body;
-
-        if (!password) {
-            return NextResponse.json({ success: false, message: "Password is required to confirm account deletion" }, { status: 400 });
-        }
-
-        const userRes = await dbQuery("SELECT password FROM users WHERE id = $1", [userId]);
-        if (userRes.rows.length === 0) {
-            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
-        }
-
-        const isMatch = await bcrypt.compare(password, userRes.rows[0].password);
-        if (!isMatch) {
-            return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 400 });
-        }
-
-        // Delete user account from DB
-        await dbQuery("DELETE FROM users WHERE id = $1", [userId]);
-
-        // Clear user cookie
-        const cookieStore = await cookies();
-        cookieStore.delete('disibin-user');
-
-        return NextResponse.json({ success: true, message: "Account deleted successfully" });
-
-    } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  try {
+    const auth = await authenticateUser();
+    if (!auth.success) {
+      return Response.json({ error: auth.message }, { status: 401 });
     }
+
+    // Delete user from database (PostgreSQL handles cascading & nullifying foreign keys)
+    await query('DELETE FROM users WHERE user_id = $1', [auth.user.user_id]);
+
+    // Clear authentication cookie
+    const cookieStore = await cookies();
+    cookieStore.set('ecom_token', '', { expires: new Date(0), path: '/' });
+
+    return Response.json({ message: 'Your account has been deleted successfully' }, { status: 200 });
+
+  } catch (error) {
+    console.error('Account deletion error:', error);
+    return Response.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }

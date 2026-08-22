@@ -1,220 +1,315 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast, Toaster } from 'react-hot-toast';
-import {
-  FiStar, FiMessageSquare, FiClock, FiCheckCircle,
-  FiTrash2, FiLoader, FiSend, FiCornerDownRight
-} from 'react-icons/fi';
+'use client'
+import React, { useContext, useEffect, useState } from 'react'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { Context } from '@/component/helper/Context'
+import RichTextEditor from '@/component/helper/RichTextEditor'
+import { 
+  BiStar, 
+  BiLoaderAlt, 
+  BiCommentDetail, 
+  BiTime, 
+  BiCheckCircle,
+  BiPlusCircle,
+  BiArrowBack,
+  BiTrash,
+  BiInfoCircle
+} from 'react-icons/bi'
 
 export default function UserReviewsPage() {
-  const [review, setReview] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const { user, loading: userLoading, userSidebar } = useContext(Context)
+  
+  const [reviews, setReviews] = useState([])
+  const [reviewsLoading, setReviewsLoading] = useState(true)
+
+  // Form states
+  const [rating, setRating] = useState(5)
+  const [title, setTitle] = useState('')
+  const [comment, setComment] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
+
+  const handleDeleteReview = async (id) => {
+    if (!window.confirm('Are you sure you want to delete your review? This will remove it from public view.')) {
+      return
+    }
+    setDeletingId(id)
+    try {
+      await axios.delete(`/api/review/${id}`)
+      toast.success('Review deleted successfully!')
+      setReviews([])
+      fetchMyReviews(true)
+    } catch (err) {
+      toast.error('Failed to delete review')
+      console.error(err)
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const fetchMyReviews = async (silent = false) => {
+    if (!silent) setReviewsLoading(true)
+    try {
+      const res = await axios.get('/api/review?personal=true')
+      setReviews(res.data)
+    } catch (err) {
+      toast.error('Failed to load your reviews')
+      console.error(err)
+    } finally {
+      if (!silent) setReviewsLoading(false)
+    }
+  }
 
   useEffect(() => {
-    fetchUserReview();
-  }, []);
-
-  const fetchUserReview = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get('/api/public/review?type=me');
-      if (res.data.success) {
-        setReview(Array.isArray(res.data.data) ? null : res.data.data);
-      }
-    } catch {
-      toast.error('Failed to load your review status');
-    } finally {
-      setLoading(false);
+    if (user) {
+      fetchMyReviews()
     }
-  };
+  }, [user])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!rating) return toast.error('Please select a star rating');
-
-    setSubmitting(true);
-    try {
-      const res = await axios.post('/api/public/review', { rating, comment: comment.trim() });
-      if (res.data.success) {
-        toast.success('Review submitted successfully!');
-        setReview(res.data.data);
-        setComment('');
-      } else {
-        toast.error(res.data.message || 'Failed to submit review');
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to submit review');
-    } finally {
-      setSubmitting(false);
+  const handleSubmitReview = async (e) => {
+    e.preventDefault()
+    if (rating < 1 || rating > 5) {
+      toast.error('Please select a rating between 1 and 5 stars')
+      return
     }
-  };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Delete your review? This cannot be undone.')) return;
-
-    setDeleting(true);
+    setSubmitting(true)
     try {
-      const res = await axios.delete(`/api/public/review/${review.id}`);
-      if (res.data.success) {
-        toast.success('Review deleted');
-        setReview(null);
-      } else {
-        toast.error(res.data.message || 'Failed to delete review');
-      }
-    } catch {
-      toast.error('Failed to delete review');
+      const cleanComment = comment && comment !== '<p></p>' ? comment.trim() : '';
+      await axios.post('/api/review', {
+        rating,
+        title: title.trim(),
+        comment: cleanComment
+      })
+      toast.success('Review submitted! It will appear publicly once approved by moderation.')
+      setTitle('')
+      setComment('')
+      setRating(5)
+      fetchMyReviews(true)
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to submit review')
+      console.error(err)
     } finally {
-      setDeleting(false);
+      setSubmitting(false)
     }
-  };
+  }
+
+  const renderStarsSelector = () => {
+    return (
+      <div className="flex gap-1.5 items-center">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => setRating(star)}
+            className="text-xl transition cursor-pointer"
+          >
+            <BiStar className={star <= rating ? 'text-amber-500 fill-amber-500' : 'text-slate-300'} />
+          </button>
+        ))}
+        <span className="text-xs text-slate-600 font-bold ml-1.5 uppercase tracking-wider">{rating} / 5 Stars</span>
+      </div>
+    )
+  }
+
+  const renderStars = (count) => {
+    return (
+      <div className="flex gap-0.5 text-amber-500 text-xs">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <BiStar key={star} className={star <= count ? 'fill-amber-500' : 'text-slate-200'} />
+        ))}
+      </div>
+    )
+  }
+
+  if (userLoading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-slate-50">
+        <BiLoaderAlt className="animate-spin text-4xl text-slate-800" />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="w-full min-h-screen flex flex-col items-center justify-center p-4 md:p-8 bg-slate-50">
+        <div className="w-full max-w-md bg-white border border-slate-200 p-6 md:p-8 flex flex-col gap-4 text-center shadow-sm">
+          <BiCommentDetail className="text-5xl text-slate-400 mx-auto" />
+          <h1 className="text-xl font-bold text-slate-800">Reviews Panel</h1>
+          <p className="text-slate-600 text-xs leading-relaxed">Please log in to write testimonials and review your submitted feedback.</p>
+          <div className="mt-2">
+            <Link href="/login" className="px-6 py-2.5 bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition cursor-pointer shadow-sm">
+              Log In
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="p-4 w-full space-y-6">
-      <Toaster position="top-center" />
-
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-1">
-        <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-          <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
-            <FiStar size={20} />
-          </span>
-          My Review & Feedback
-        </h1>
-        <p className="text-slate-500 text-sm pl-11">
-          Share your experience working with Disibin and view official staff responses
-        </p>
-      </div>
-
-      {loading ? (
-        <div className="py-16 bg-white rounded-3xl border border-slate-100 shadow-sm text-center text-slate-400 space-y-2">
-          <FiLoader className="animate-spin mx-auto text-amber-500" size={28} />
-          <p className="text-sm font-medium">Loading your feedback status...</p>
+    <div className={`w-full min-h-screen bg-slate-50 pt-20 pb-12 px-2 sm:px-4 md:px-8 transition-all duration-300 ${userSidebar ? 'lg:pl-60' : 'lg:pl-8'}`}>
+      <div className="w-full flex flex-col gap-6">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 pb-4">
+          <div>
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              <BiCommentDetail className="text-2xl text-primary" />
+              Your Reviews & Feedback
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">Submit product reviews, share testimonials, and check moderation states.</p>
+          </div>
+          <Link href="/user" className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition cursor-pointer flex items-center gap-1.5 bg-white shadow-sm">
+            <BiArrowBack /> Back to Profile
+          </Link>
         </div>
-      ) : review ? (
-        /* Existing Review Card */
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-            <div>
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
-                review.is_approved
-                  ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                  : 'bg-amber-50 text-amber-600 border border-amber-100'
-              }`}>
-                {review.is_approved ? <FiCheckCircle size={12} /> : <FiClock size={12} />}
-                {review.is_approved ? 'Approved & Published' : 'Pending Moderation'}
-              </span>
-            </div>
 
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold border border-rose-100 transition-all self-start sm:self-auto disabled:opacity-50"
-            >
-              {deleting ? <FiLoader className="animate-spin" size={13} /> : <FiTrash2 size={13} />}
-              Delete Review
-            </button>
-          </div>
-
-          {/* Star Rating Display */}
-          <div className="space-y-2">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Your Rating</p>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <FiStar
-                  key={star}
-                  size={24}
-                  className={star <= review.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Comment */}
-          <div className="space-y-1">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Your Review</p>
-            <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap bg-slate-50 p-4 rounded-2xl border border-slate-100">
-              {review.comment || 'No comment text provided.'}
-            </p>
-            <p className="text-[11px] text-slate-400 pt-1 font-medium">
-              Submitted on {new Date(review.created_at).toLocaleString()}
-            </p>
-          </div>
-
-          {/* Manager Staff Reply */}
-          {review.reply && (
-            <div className="bg-primary/10/70 p-5 rounded-2xl border border-primary/20 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-primary-dark">
-                <FiCornerDownRight size={14} />
-                Official Response from Disibin Team
+        {/* Dashboard Split View */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Left panel: Submit Review Form */}
+          <div className="lg:col-span-5 bg-white border border-slate-200 p-5 md:p-6 shadow-sm flex flex-col gap-6">
+            {reviews.length > 0 ? (
+              <div className="flex flex-col gap-3 text-center py-6">
+                <BiInfoCircle className="text-3xl text-amber-500 mx-auto" />
+                <h3 className="font-bold text-slate-800 text-sm">Review Limit Reached</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">
+                  You have already submitted a review. To maintain authenticity, we limit feedback to one submission per account.
+                </p>
+                <p className="text-[11px] text-slate-400 italic">
+                  To write a new review, delete your existing review using the trash action button in your feedback log.
+                </p>
               </div>
-              <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap pl-5">
-                {review.reply}
-              </p>
-            </div>
-          )}
-        </div>
-      ) : (
-        /* New Review Form */
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-          <div className="space-y-1">
-            <h2 className="text-lg font-bold text-slate-900">Submit a Review</h2>
-            <p className="text-xs text-slate-500">How would you rate your experience working with us?</p>
-          </div>
+            ) : (
+              <>
+                <div>
+                  <h2 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                    <BiPlusCircle className="text-primary" /> Write a Testimonial
+                  </h2>
+                  <p className="text-slate-500 text-xs mt-1">Let us know how your experience with our store and catalog products was!</p>
+                </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Interactive Rating Picker */}
-            <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">Rating *</label>
-              <div className="flex items-center gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setRating(star)}
-                    className="p-1 hover:scale-110 transition-transform focus:outline-none"
-                  >
-                    <FiStar
-                      size={28}
-                      className={star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}
+                <form onSubmit={handleSubmitReview} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-700 uppercase">Rating Score</label>
+                    {renderStarsSelector()}
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-700 uppercase">Subject Title <span className="text-rose-600">*</span></label>
+                    <input 
+                      required
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-full text-xs text-slate-800 bg-white border border-slate-200 px-3 py-2 outline-none"
                     />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-700 uppercase">Detailed Review Comment</label>
+                    <RichTextEditor value={comment} onChange={setComment} />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="mt-2 w-full py-2.5 bg-primary hover:bg-primary-dark text-white font-bold text-xs shadow-sm transition cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  >
+                    {submitting ? (
+                      <>
+                        <BiLoaderAlt className="animate-spin text-sm" /> Submitting...
+                      </>
+                    ) : (
+                      'Submit Review'
+                    )}
                   </button>
-                ))}
-                <span className="text-xs font-bold text-slate-600 ml-2">
-                  {rating} of 5 Stars
-                </span>
+                </form>
+              </>
+            )}
+          </div>
+
+          {/* Right panel: Listing customer's reviews */}
+          <div className="lg:col-span-7 bg-white border border-slate-200 p-5 md:p-6 shadow-sm flex flex-col gap-4">
+            <h2 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Your Feedback Log</h2>
+
+            {reviewsLoading ? (
+              <div className="flex items-center justify-center text-slate-400 text-xs gap-1.5 py-12">
+                <BiLoaderAlt className="animate-spin text-base" /> Loading reviews...
               </div>
-            </div>
+            ) : reviews.length === 0 ? (
+              <div className="flex flex-col items-center justify-center p-8 text-center text-slate-400 gap-2 py-12 border-2 border-dashed border-slate-200">
+                <BiCommentDetail className="text-3xl text-slate-350" />
+                <p className="text-xs font-bold text-slate-700">No reviews posted yet</p>
+                <p className="text-xs text-slate-400 max-w-xs">You have not submitted any product feedback or store testimonials yet.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {reviews.map((rev) => {
+                  return (
+                    <div 
+                      key={rev.review_id}
+                      className="border border-slate-200 p-4 bg-slate-50/50 flex flex-col gap-2 hover:border-slate-300 transition"
+                    >
+                      <div className="flex justify-between items-start gap-2 flex-wrap">
+                        <div>
+                          <h3 className="text-xs font-bold text-slate-800">{rev.title}</h3>
+                          <div className="mt-1">{renderStars(rev.rating)}</div>
+                        </div>
 
-            {/* Comment Area */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Review Comments (Optional)
-              </label>
-              <textarea
-                value={comment}
-                onChange={e => setComment(e.target.value)}
-                placeholder="Share detail about your project, service quality, and teamwork experience..."
-                rows={4}
-                className="input-style text-sm resize-none"
-              />
-            </div>
+                        <div>
+                          {rev.is_approved ? (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase border bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1">
+                              <BiCheckCircle /> Approved
+                            </span>
+                          ) : (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase border bg-amber-50 text-amber-700 border-amber-200 flex items-center gap-1">
+                              <BiTime /> Pending Approval
+                            </span>
+                          )}
+                        </div>
+                      </div>
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-slate-900 hover:bg-amber-500 text-white rounded-2xl font-bold text-sm transition-all shadow-md disabled:opacity-50"
-            >
-              {submitting ? <FiLoader className="animate-spin" size={16} /> : <FiSend size={16} />}
-              {submitting ? 'Submitting Review...' : 'Submit Review'}
-            </button>
-          </form>
+                      {rev.comment && (
+                        <p className="text-slate-700 text-xs leading-relaxed italic bg-white p-3 border border-slate-200 mt-1">
+                          "{rev.comment.replace(/<[^>]*>/g, '').trim()}"
+                        </p>
+                      )}
+
+                      <div className="flex justify-between items-center text-[11px] text-slate-400 font-mono mt-1 pt-2 border-t border-slate-200">
+                        <div className="flex items-center gap-2">
+                          <span>ID: #{rev.review_id}</span>
+                          <span>•</span>
+                          <span>{new Date(rev.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteReview(rev.review_id)}
+                          disabled={deletingId === rev.review_id}
+                          className="text-rose-600 hover:text-rose-800 p-1 transition cursor-pointer flex items-center gap-1 font-sans text-xs font-bold"
+                        >
+                          {deletingId === rev.review_id ? (
+                            <BiLoaderAlt className="animate-spin" />
+                          ) : (
+                            <>
+                              <BiTrash className="text-xs" /> Delete Review
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
         </div>
-      )}
+
+      </div>
     </div>
-  );
+  )
 }
+
+

@@ -1,23 +1,23 @@
-import Navbar from "@/component/user/bars/Navbar"
-import Sidebar from "@/component/user/bars/Sidebar"
-import { isUserLogin } from "@/lib/auth/user"
-import { redirect } from "next/navigation"
+import Usernavbar from '@/component/bars/Usernavbar'
+import Usersidebar from '@/component/bars/Usersidebar'
+import { isUser } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import React from 'react'
+import { STORE_NAME, STORE_TAGLINE } from '@/lib/secret'
 
 export const metadata = {
-  title: 'My Dashboard | Disibin',
-  description: 'Manage your interactions, orders, and projects on Disibin.',
+  title: `User Portal | ${STORE_NAME} - ${STORE_TAGLINE}`,
+  description: `User account dashboard on ${STORE_NAME}, ${STORE_TAGLINE}.`,
 }
 
-export default async function Layout({ children }) {
-  const auth=await isUserLogin()
-  if(!auth.success) return redirect('/auth/login')
+export default async function UserLayout({ children }) {
+  const auth=await isUser()
+  if(!auth.success) redirect('/login')
   return (
-    <section className="w-full relative pt-14 bg-slate-50 min-h-screen">
-      <Navbar/>
-      <Sidebar/>
-      <main className="lg:ml-64 transition-all duration-300 animate-in fade-in">
-        {children}
-      </main>
-    </section>
+    <div className='w-full relative overflow-x-hidden pt-14'>
+      <Usernavbar/>
+      <Usersidebar/>
+      {children}
+    </div>
   )
 }

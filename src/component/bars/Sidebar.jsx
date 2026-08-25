@@ -25,7 +25,7 @@ import {
   BiSolidTruck
 } from 'react-icons/bi'
 
-const Dashboardsidebar = () => {
+const Sidebar = () => {
     const { dashSidebar, logout, user } = useContext(Context)
     const pathname = usePathname()
 
@@ -132,4 +132,4 @@ const Dashboardsidebar = () => {
     )
 }
 
-export default Dashboardsidebar
+export default Sidebar

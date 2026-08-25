@@ -20,8 +20,8 @@ export const BREVO_SENDER_EMAIL=process.env.BREVO_SENDER_EMAIL
 export const BREVO_SENDER_NAME=process.env.BREVO_SENDER_NAME
 export const BREVO_API_KEY=process.env.BREVO_API_KEY
 
-export const STORE_NAME = "Demart";
-export const STORE_TAGLINE = "Timeless style for the modern woman";
+export const STORE_NAME = "Point of Sale";
+export const STORE_TAGLINE = "Super Fast POS system";
 
 export function getBaseUrl(req) {
   if (req) {

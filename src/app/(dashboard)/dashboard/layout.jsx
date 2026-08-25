@@ -1,5 +1,5 @@
-import Dashboardnavbar from '@/component/bars/Dashboardnavbar'
-import Dashboardsidebar from '@/component/bars/Dashboardsidebar'
+import Dashboardnavbar from '@/component/bars/Navbar'
+import Dashboardsidebar from '@/component/bars/Sidebar'
 import { isManagementRole } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import React from 'react'

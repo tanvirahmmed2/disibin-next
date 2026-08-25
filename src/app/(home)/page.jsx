@@ -1,29 +1,12 @@
-import Brands from '@/component/pages/Brands'
-import Categories from '@/component/pages/Categories'
-import Contact from '@/component/pages/Contact'
-import Hero from '@/component/pages/Hero'
-import LatetsProducts from '@/component/pages/LatetsProducts'
-import Reviews from '@/component/pages/Reviews'
-import StoreLocation from '@/component/pages/StoreLocation'
-import TopDiscountedProducts from '@/component/pages/TopDiscountedProducts'
-import TopSales from '@/component/pages/TopSales'
+import LoginForm from '@/component/forms/LoginForm'
 import React from 'react'
 
-const Homepage = () => {
+const LoginPage = () => {
   return (
-    <div className="w-full overflow-x-hidden">
-      
-      <Hero/>
-      <TopSales/>
-      <Categories/>
-      <TopDiscountedProducts/>
-      <Brands/>
-      <LatetsProducts/>
-      <Reviews/>
-      <Contact/>
-      <StoreLocation/>
+    <div className='w-full min-h-screen flex items-center justify-center bg-slate-50 p-4'>
+      <LoginForm />
     </div>
   )
 }
 
-export default Homepage
+export default LoginPage

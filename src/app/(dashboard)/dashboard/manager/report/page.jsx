@@ -258,22 +258,6 @@ export default function ManagerReportPage() {
     )
   }
 
-  const isManager = user && ['manager', 'admin'].includes(user.role)
-  if (!isManager) {
-    return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-4 md:p-8 bg-slate-50">
-        <div className="w-full max-w-md bg-white border border-slate-200 p-6 md:p-8 flex flex-col gap-4 text-center shadow-sm">
-          <BiShieldQuarter className="text-5xl text-rose-500 mx-auto" />
-          <h1 className="text-2xl font-bold text-slate-800">Access Denied</h1>
-          <p className="text-slate-600 text-xs md:text-sm">Please sign in with a Manager or Admin account to view reporting.</p>
-          <Link href="/" className="mt-4 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs md:text-sm font-bold transition cursor-pointer shadow-sm">
-            Sign In
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
   // Calculate aggregates
   const totalQtySold = reportData.topProducts.reduce((acc, curr) => acc + curr.quantity, 0)
   const totalRevenue = reportData.categorySales.reduce((acc, curr) => acc + curr.revenue, 0)

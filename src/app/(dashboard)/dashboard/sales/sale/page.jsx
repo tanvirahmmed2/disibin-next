@@ -265,22 +265,6 @@ export default function POSPageClean() {
     )
   }
 
-  const isSales = user && ['admin', 'manager', 'sales'].includes(user.role)
-  if (!isSales) {
-    return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-8 bg-slate-50">
-        <div className="w-full max-w-sm bg-white rounded-xl border border-slate-100 p-8 text-center flex flex-col gap-4">
-          <BiShieldQuarter className="text-4xl text-rose-500 mx-auto" />
-          <h1 className="text-xl font-bold text-slate-800">Access Denied</h1>
-          <p className="text-slate-400 text-xs">Sales desk privileges required.</p>
-          <Link href="/" className="px-5 py-2 bg-[#73976A] text-white rounded-lg text-xs font-semibold hover:bg-[#607E59] transition">
-            Sign In
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={`w-full min-h-screen bg-slate-50/50 pt-20 pb-12 px-4 md:px-6 transition-all duration-300 ${dashSidebar ? 'lg:pl-68' : 'lg:pl-8'}`}>
       

@@ -48,19 +48,6 @@ export default function AdminBackupPage() {
     }
   }
 
-  const isAdmin = user && user.role === 'admin'
-  if (!isAdmin) {
-    return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-4 md:p-8 bg-slate-50">
-        <div className="w-full max-w-md bg-white border border-slate-200 p-6 md:p-8 flex flex-col gap-4 text-center shadow-sm">
-          <BiShieldQuarter className="text-5xl text-rose-500 mx-auto" />
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Access Denied</h1>
-          <p className="text-slate-600 text-xs md:text-sm">Please sign in with an Administrator account to view backup features.</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={`w-full min-h-screen bg-slate-50 pt-20 pb-12 px-2 sm:px-4 md:px-8 transition-all duration-300 ${dashSidebar ? 'lg:pl-64' : 'lg:pl-8'}`}>
       <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">

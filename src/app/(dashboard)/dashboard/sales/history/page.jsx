@@ -102,22 +102,6 @@ export default function SalesHistoryPage() {
     )
   }
 
-  const isStaff = user && ['admin', 'manager', 'sales'].includes(user.role)
-  if (!isStaff) {
-    return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-8 bg-slate-50">
-        <div className="w-full max-w-md bg-white border border-slate-200 p-8 flex flex-col gap-4 text-center shadow-sm">
-          <BiShieldQuarter className="text-5xl text-rose-500 mx-auto" />
-          <h1 className="text-2xl font-bold text-slate-800">Access Denied</h1>
-          <p className="text-slate-600 text-xs">Please sign in with a Staff account to view orders history.</p>
-          <Link href="/" className="mt-4 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer shadow-sm">
-            Sign In
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
   // Filter orders by search
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 

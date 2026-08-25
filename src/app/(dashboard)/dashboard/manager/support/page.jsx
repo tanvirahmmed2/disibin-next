@@ -228,29 +228,6 @@ export default function DashboardManagerSupportPage() {
     )
   }
 
-  const isStaff = user && ['admin', 'manager', 'sales'].includes(user.role)
-  if (!isStaff) {
-    return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-8 bg-slate-50">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-100 p-8 flex flex-col gap-4 text-center">
-          <BiSupport className="text-5xl text-rose-500 mx-auto animate-bounce" />
-          <h1 className="text-2xl font-bold text-slate-805">Access Denied</h1>
-          <p className="text-slate-600 text-sm">
-            You do not have permission to view the Management Support Ticket console. Only admin, manager, and sales staff roles are authorized.
-          </p>
-          <div className="mt-4 flex gap-4 justify-center">
-            <Link href="/" className="px-5 py-2 border border-slate-205 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-50 transition cursor-pointer">
-              Back to Shop
-            </Link>
-            <Link href="/" className="px-5 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition cursor-pointer">
-              Sign in as Staff
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={`w-full min-h-screen bg-slate-50 pt-20 pb-12 px-4 md:px-8 transition-all duration-300 ${dashSidebar ? 'lg:pl-68' : 'lg:pl-8'}`}>
       <div className="max-w-7xl mx-auto flex flex-col gap-6 h-[calc(100vh-8.5rem)] min-h-[500px]">

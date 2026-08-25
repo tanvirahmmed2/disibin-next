@@ -61,7 +61,7 @@ const ContextProvider = ({ children }) => {
             items.push({
                 product_id: product.product_id,
                 name: product.name,
-                image: variant && variant.image ? variant.image : product.image,
+                image: (variant && variant.image) ? variant.image : (product.image || '/product.jpeg'),
                 sale_price: variant ? parseFloat(variant.sale_price) : parseFloat(product.sale_price),
                 discount_price: variant ? parseFloat(variant.discount_price || 0) : parseFloat(product.discount_price || 0),
                 variant: variantName,
@@ -201,7 +201,7 @@ const ContextProvider = ({ children }) => {
         try {
             await axios.post('/api/user/logout');
             
-            window.location.replace('/login')
+            window.location.replace('/')
             setUser(null);
         } catch (error) {
             console.error("Logout failed:", error);

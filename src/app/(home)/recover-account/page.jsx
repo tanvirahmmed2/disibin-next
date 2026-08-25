@@ -65,7 +65,7 @@ const RecoverAccountForm = () => {
             
             // Redirect to login after 3 seconds
             setTimeout(() => {
-                router.push('/login')
+                router.push('/')
             }, 3000)
         } catch (error) {
             const errorMsg = error.response?.data?.error || 'Failed to reset password. Link may be invalid or expired.'
@@ -157,7 +157,7 @@ const RecoverAccountForm = () => {
             )}
 
             <div className='text-center text-xs mt-3 flex justify-between items-center px-1 font-bold'>
-                <Link href={'/login'} className='text-primary hover:text-primary-light hover:underline transition'>Back to Login</Link>
+                <Link href={'/'} className='text-primary hover:text-primary-light hover:underline transition'>Back to Login</Link>
                 <Link href={'/register'} className='text-slate-450 hover:text-slate-600 hover:underline transition'>Create account</Link>
             </div>
         </div>

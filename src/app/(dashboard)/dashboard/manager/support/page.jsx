@@ -242,7 +242,7 @@ export default function DashboardManagerSupportPage() {
             <Link href="/" className="px-5 py-2 border border-slate-205 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-50 transition cursor-pointer">
               Back to Shop
             </Link>
-            <Link href="/login" className="px-5 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition cursor-pointer">
+            <Link href="/" className="px-5 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition cursor-pointer">
               Sign in as Staff
             </Link>
           </div>

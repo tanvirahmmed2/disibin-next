@@ -50,7 +50,7 @@ const RegisterForm = () => {
                 confirmPassword: ''
             })
 
-            router.push('/login')
+            router.push('/')
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'Registration failed. Please try again.'
             toast.error(errorMessage, { id: toastId })
@@ -139,7 +139,7 @@ const RegisterForm = () => {
 
                     <div className='w-full flex flex-row items-center justify-between text-xs font-bold mt-2'>
                         <span className='text-slate-500'>Already have an account?</span>
-                        <Link href={'/login'} className='text-primary hover:underline transition'>Login here</Link>
+                        <Link href={'/'} className='text-primary hover:underline transition'>Login here</Link>
                     </div>
 
                     <button

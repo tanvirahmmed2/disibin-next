@@ -12,7 +12,7 @@ export const metadata = {
 
 export default async function DashboardLayout({ children }) {
   const auth=await isManagementRole()
-  if(!auth.success) redirect('/user')
+  if(!auth.success) redirect('/')
   return (
     <div className='w-full overflow-x-hidden relative'>
       <Dashboardnavbar/>

@@ -25,12 +25,17 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        <Link href="/" className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold text-white hover:bg-black/10 border border-white/20 transition cursor-pointer">
-          <BiHomeAlt className="text-sm text-white" /> Store
-        </Link>
-
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-white hidden md:inline">{user?.name}</span>
+          {user?.name && (
+            <Link href="/dashboard/profile" className="flex items-center gap-2 hover:opacity-90 transition cursor-pointer">
+              <span className="text-xs font-bold text-white hidden sm:inline">{user.name}</span>
+              {user.role && (
+                <span className="text-[10px] uppercase font-extrabold bg-white/20 px-2 py-0.5 rounded-full tracking-wider text-white">
+                  {user.role}
+                </span>
+              )}
+            </Link>
+          )}
         </div>
       </div>
     </header>

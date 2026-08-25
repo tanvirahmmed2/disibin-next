@@ -11,9 +11,17 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!loading) {
       if (user && user.role) {
-        router.push(`/dashboard/${user.role}`)
+        if (user.role === 'admin') {
+          router.push('/dashboard/admin/overview')
+        } else if (user.role === 'manager') {
+          router.push('/dashboard/manager/overview')
+        } else if (user.role === 'sales') {
+          router.push('/dashboard/sales/sale')
+        } else {
+          router.push('/dashboard/sales/sale')
+        }
       } else {
-        router.push('/login')
+        router.push('/')
       }
     }
   }, [user, loading, router])

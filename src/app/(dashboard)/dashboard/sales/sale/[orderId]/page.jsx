@@ -123,7 +123,7 @@ export default function POSOrderDetailPage() {
                       {/* Product Image */}
                       <div className="w-12 h-12 rounded-lg border border-slate-100 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
                         <img 
-                          src={item.product_image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150'} 
+                          src={item.product_image || '/product.jpeg'} 
                           alt={item.product_name} 
                           className="w-full h-full object-cover"
                         />

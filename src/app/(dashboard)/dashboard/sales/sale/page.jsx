@@ -273,7 +273,7 @@ export default function POSPageClean() {
           <BiShieldQuarter className="text-4xl text-rose-500 mx-auto" />
           <h1 className="text-xl font-bold text-slate-800">Access Denied</h1>
           <p className="text-slate-400 text-xs">Sales desk privileges required.</p>
-          <Link href="/login" className="px-5 py-2 bg-[#73976A] text-white rounded-lg text-xs font-semibold hover:bg-[#607E59] transition">
+          <Link href="/" className="px-5 py-2 bg-[#73976A] text-white rounded-lg text-xs font-semibold hover:bg-[#607E59] transition">
             Sign In
           </Link>
         </div>
@@ -373,7 +373,7 @@ export default function POSPageClean() {
                           <td className="py-2 px-2 text-center">
                             <div className="w-8 h-8 rounded-md border border-slate-100 bg-slate-50 flex items-center justify-center mx-auto overflow-hidden relative">
                               <Image width={80} height={80}
-                                src={item.image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150'} 
+                                src={item.image || '/product.jpeg'} 
                                 alt={item.name} 
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                               />
@@ -649,8 +649,9 @@ export default function POSPageClean() {
                       <div className="flex flex-col gap-2">
                         <div className="relative aspect-square w-full rounded-md overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
                           <Image width={100} height={100} 
-                            src={p.image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100'} 
+                            src={p.image || '/product.jpeg'} 
                             alt={p.name}
+                            loading="eager"
                             className="w-full h-full object-cover"
                           />
                         </div>

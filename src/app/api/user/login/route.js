@@ -10,7 +10,10 @@ export async function POST(req) {
       return Response.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = typeof password === 'string' ? password.trim() : password;
+
+    const result = await query('SELECT * FROM users WHERE LOWER(email) = $1', [cleanEmail]);
 
     if (result.rows.length === 0) {
       return Response.json({ error: 'Invalid email or password' }, { status: 400 });
@@ -26,7 +29,12 @@ export async function POST(req) {
       return Response.json({ error: 'Account is deactivated' }, { status: 403 });
     }
 
-    const isPasswordMatch = await comparePassword(password, user.password);
+    const allowedRoles = ['admin', 'manager', 'sales'];
+    if (!allowedRoles.includes(user.role)) {
+      return Response.json({ error: 'Access denied: Only Admin, Manager, and Sales accounts can log in' }, { status: 403 });
+    }
+
+    const isPasswordMatch = await comparePassword(cleanPassword, user.password);
     if (!isPasswordMatch) {
       return Response.json({ error: 'Invalid email or password' }, { status: 400 });
     }

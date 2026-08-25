@@ -1,5 +1,6 @@
 'use client'
 import React, { useContext, useEffect, useState } from 'react'
+import Link from 'next/link'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Context } from '@/component/helper/Context'
@@ -9,7 +10,8 @@ import {
   BiShield, 
   BiBlock, 
   BiCheckCircle,
-  BiLoaderAlt
+  BiLoaderAlt,
+  BiPlus
 } from 'react-icons/bi'
 
 export default function DashboardAdminPeoplePage() {
@@ -104,12 +106,23 @@ export default function DashboardAdminPeoplePage() {
       <div className="w-full flex flex-col gap-6">
         
         {/* Header */}
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <BiUser style={{ color: themeColor }} />
-            Accounts Management
-          </h1>
-          <p className="text-slate-500 text-xs md:text-sm mt-0.5">Promote roles, activate accounts, and manage bans for store users.</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
+              <BiUser style={{ color: themeColor }} />
+              Accounts Management
+            </h1>
+            <p className="text-slate-500 text-xs md:text-sm mt-0.5">Promote roles, activate accounts, and manage bans for store users.</p>
+          </div>
+
+          <Link
+            href="/dashboard/admin/people/new"
+            className="px-4 py-2.5 text-white text-xs font-bold flex items-center justify-center gap-2 rounded-xl shadow-sm transition hover:opacity-90 self-start sm:self-auto"
+            style={{ backgroundColor: themeColor }}
+          >
+            <BiPlus className="text-lg" />
+            <span>Create New User</span>
+          </Link>
         </div>
 
         {/* Stats Grid */}

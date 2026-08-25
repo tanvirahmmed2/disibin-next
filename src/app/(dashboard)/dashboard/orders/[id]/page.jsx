@@ -149,15 +149,11 @@ export default function OrderPreviewPage() {
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-12 h-12 border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
-                          {item.product_image ? (
-                            <img 
-                              src={item.product_image} 
-                              alt={item.product_name} 
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <BiPackage className="text-slate-300 text-xl" />
-                          )}
+                          <img 
+                            src={item.product_image || '/product.jpeg'} 
+                            alt={item.product_name} 
+                            className="w-full h-full object-cover"
+                          />
                         </div>
 
                         <div className="flex flex-col gap-0.5 min-w-0">

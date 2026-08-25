@@ -77,8 +77,9 @@ export default function ProductCard({ product }) {
         
 
         <Image width={500} height={500}
-          src={image}
+          src={image || '/product.jpeg'}
           alt={name}
+          loading="eager"
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
         />
 

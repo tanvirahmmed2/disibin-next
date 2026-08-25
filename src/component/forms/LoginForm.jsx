@@ -37,7 +37,7 @@ const LoginForm = () => {
                 setUser(response.data.user)
             }
 
-            window.location.replace('/user')
+            window.location.replace('/dashboard')
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'Failed to login. Please try again.'
             toast.error(errorMessage, { id: toastId })
@@ -85,9 +85,8 @@ const LoginForm = () => {
                     />
                 </div>
                 
-                <div className='w-full flex flex-row items-center justify-between text-xs font-bold mt-2'>
-                    <Link href={'/register'} className='text-primary hover:text-primary-light hover:underline transition'>Register Account</Link>
-                    <Link href={'/recover-account'} className='text-slate-450 hover:text-slate-600 hover:underline transition'>Recover password?</Link>
+                <div className='w-full flex flex-row items-center justify-end text-xs font-bold mt-1'>
+                    <Link href={'/recover-account'} className='text-slate-400 hover:text-slate-600 hover:underline transition'>Forgot password?</Link>
                 </div>
                 
                 <button 

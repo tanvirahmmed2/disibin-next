@@ -263,7 +263,8 @@ LEFT JOIN users r ON i.receiver_id = r.user_id;
 
 CREATE TABLE websites (
   website_id SERIAL PRIMARY KEY,
-  logo_url TEXT,
+  logo TEXT,
+  logo_id TEXT,
   theme_color TEXT,
 
   hero_title TEXT,

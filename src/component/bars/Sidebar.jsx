@@ -22,7 +22,8 @@ import {
   BiTime,
   BiCheckCircle,
   BiStoreAlt,
-  BiSolidTruck
+  BiSolidTruck,
+  BiCloudDownload
 } from 'react-icons/bi'
 
 const Sidebar = () => {
@@ -40,7 +41,9 @@ const Sidebar = () => {
       { name: 'Reviews', path: '/dashboard/admin/reviews', icon: <BiUserVoice /> },
       { name: 'Issue Log', path: '/dashboard/admin/issue', icon: <BiMessageSquareDetail /> },
       { name: 'Reports', path: '/dashboard/admin/report', icon: <BiFile /> },
+      { name: 'Backup', path: '/dashboard/admin/backup', icon: <BiCloudDownload /> },
       { name: 'Settings', path: '/dashboard/admin/settings', icon: <BiCog /> },
+      { name: 'My Profile', path: '/dashboard/profile', icon: <BiUser /> },
     ]
 
     const managerLinks = [
@@ -60,6 +63,7 @@ const Sidebar = () => {
       { name: 'Payments', path: '/dashboard/manager/payments', icon: <BiDollarCircle /> },
       { name: 'Returns', path: '/dashboard/manager/return', icon: <BiArrowBack /> },
       { name: 'Reports', path: '/dashboard/manager/report', icon: <BiFile /> },
+      { name: 'My Profile', path: '/dashboard/profile', icon: <BiUser /> },
     ]
 
     const salesLinks = [
@@ -72,6 +76,7 @@ const Sidebar = () => {
       { name: 'Payments', path: '/dashboard/sales/payments', icon: <BiDollarCircle /> },
       { name: 'History', path: '/dashboard/sales/history', icon: <BiHistory /> },
       { name: 'Report Issue', path: '/dashboard/sales/issue', icon: <BiMessageSquareDetail /> },
+      { name: 'My Profile', path: '/dashboard/profile', icon: <BiUser /> },
     ]
 
     let links = []
@@ -81,6 +86,8 @@ const Sidebar = () => {
       links = managerLinks
     } else if (user?.role === 'sales') {
       links = salesLinks
+    } else if (user) {
+      links = [{ name: 'My Profile', path: '/dashboard/profile', icon: <BiUser /> }]
     }
 
     return (
@@ -113,12 +120,8 @@ const Sidebar = () => {
                 })}
             </div>
 
-            {/* Fixed footer logout section */}
             <div className="w-full pt-3 mt-2 border-t border-white/20 flex flex-col gap-1.5 shrink-0">
-                <Link href="/" className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-white/90 hover:bg-black/15 hover:text-white transition">
-                    <BiHome className="text-base text-white" />
-                    <span>Shop Home</span>
-                </Link>
+                
                 <button 
                   onClick={() => logout()} 
                   className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-left hover:bg-black/20 text-white/80 hover:text-white transition cursor-pointer"

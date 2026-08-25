@@ -154,7 +154,7 @@ export default function CustomerProfilePage() {
           <BiShieldQuarter className="text-5xl text-rose-500 mx-auto" />
           <h1 className="text-2xl font-bold text-slate-800">Access Denied</h1>
           <p className="text-slate-600 text-sm">Please sign in with a Staff account to view client records.</p>
-          <Link href="/login" className="mt-4 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition cursor-pointer shadow-sm">
+          <Link href="/" className="mt-4 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition cursor-pointer shadow-sm">
             Sign In
           </Link>
         </div>
@@ -442,11 +442,7 @@ export default function CustomerProfilePage() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                       {itemsList.map((item, idx) => (
                                         <div key={idx} className="flex items-center gap-3 bg-white p-2.5 border border-slate-200">
-                                          {item.product_image ? (
-                                            <img src={item.product_image} alt={item.product_name} className="w-10 h-10 object-cover border border-slate-200 shrink-0" />
-                                          ) : (
-                                            <div className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-400 shrink-0">No Img</div>
-                                          )}
+                                          <img src={item.product_image || '/product.jpeg'} alt={item.product_name} className="w-10 h-10 object-cover border border-slate-200 shrink-0 overflow-hidden" />
                                           <div className="min-w-0 flex-1">
                                             <div className="font-bold text-slate-800 text-xs truncate">{item.product_name}</div>
                                             <div className="text-[10px] text-slate-500">

@@ -5,19 +5,18 @@ export function proxy(request) {
   const path = request.nextUrl.pathname;
 
   const isDashboardPath = path.startsWith('/dashboard');
-  const isUserPath = path.startsWith('/user');
-  const isAuthPath = path === '/login' || path === '/register';
+  const isAuthPath = path === '/' || path === '/login' || path === '/register';
 
-  if ((isDashboardPath || isUserPath) && !token) {
+  if (isDashboardPath && !token) {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = '/';
     url.searchParams.set('redirect', path);
     return NextResponse.redirect(url);
   }
 
   if (isAuthPath && token) {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = '/dashboard';
     return NextResponse.redirect(url);
   }
 
@@ -25,7 +24,7 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/user/:path*', '/login', '/register'],
+  matcher: ['/dashboard/:path*', '/', '/login', '/register'],
 };
 
 export default proxy;

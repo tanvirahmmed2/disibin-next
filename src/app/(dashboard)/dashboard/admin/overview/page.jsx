@@ -88,7 +88,7 @@ export default function AdminOverviewPage() {
           <BiShieldQuarter className="text-5xl text-rose-500 mx-auto" />
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Access Denied</h1>
           <p className="text-slate-600 text-xs md:text-sm">Please sign in with an Administrator account to view this page.</p>
-          <Link href="/login" className="mt-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer shadow-sm">
+          <Link href="/" className="mt-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer shadow-sm">
             Sign In
           </Link>
         </div>

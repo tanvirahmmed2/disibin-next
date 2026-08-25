@@ -171,12 +171,8 @@ export default function DashboardManagerProductPage() {
                   <tr key={p.product_id} className="hover:bg-slate-50/50 transition">
                     <td className="px-3 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 border border-slate-200 bg-slate-50 flex items-center justify-center shrink-0">
-                          {p.image ? (
-                            <img src={p.image} alt={p.name} className="object-cover w-full h-full" />
-                          ) : (
-                            <BiPackage className="text-xl text-slate-400" />
-                          )}
+                        <div className="w-12 h-12 border border-slate-200 bg-slate-50 flex items-center justify-center shrink-0 overflow-hidden">
+                          <img src={p.image || '/product.jpeg'} alt={p.name} className="object-cover w-full h-full" />
                         </div>
                         <div>
                           <span className="font-bold text-slate-800 text-xs block">{p.name}</span>
